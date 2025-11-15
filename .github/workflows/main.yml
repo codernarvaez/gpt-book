@@ -31,7 +31,7 @@ jobs:
 
       - name: Install R packages for Quarto
         run: |
-          Rscript -e 'install.packages(c("knitr", "rmarkdown"), repos = "https://cloud.r-project.org")'
+          Rscript -e 'install.packages(c("knitr", "rmarkdown", "tinytex"), repos = "https://cloud.r-project.org")'
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -80,4 +80,15 @@ jobs:
 
       - name: Render Quarto project (HTML only)
         run: |
-          # De nuevo, genera el libro en
+          # De nuevo, genera el libro en _book/ en este runner limpio
+          quarto render --to html
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 👇 IMPORTANTE: carpeta donde Quarto deja el libro
+          path: _book
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
